@@ -19,12 +19,12 @@ public class FixMobileRadioAlarm implements IXposedHookLoadPackage {
     private static final String CLASS_NAME = "com.android.server.content.SyncManager$SyncHandler";
 
     @Override
-    public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
-
-        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP) {
-            XposedBridge.log("module disabled. This will only work with Android 5.0.x!");
+    public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
+        if (!"android".equals(lpparam.packageName) || !"android".equals(lpparam.processName)) {
             return;
         }
+
+        XposedBridge.log("Loaded app: " + lpparam.packageName);
 
         XposedHelpers.findAndHookMethod(CLASS_NAME, lpparam.classLoader,
                 "manageSyncAlarmLocked", "long", "long", new XC_MethodHook() {
